@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Contact Manager</title>
+  <link rel="stylesheet" href="stylesheets/reset.css">
+  <link rel="stylesheet" href="stylesheets/contacts.css">
+  <script type="text/javascript" src="/javascripts/jquery.js"></script>
+  <script type="text/javascript" src="/javascripts/handlebars.js"></script>
+  <script src="javascripts/contacts.js"></script>
+</head>
+<body>
+  <h1>Contact Manager</h1>
+  <main>
+    <section id="contacts">
+      <header>
+        <ul class="controls">
+          <li>
+            <button class="add">Add Contact</button>
+          </li>
+          <li><input type="text" id="search" placeholder="search names"></li>
+          <li>
+            <label for="taglist">Tags:</label>
+            <select name="taglist" id="taglist">
+              
+              <!-- append options from handlebars tag template -->
+            </select>
+          </li>
+        </ul>
+      </header>
+      <div id="contact_list">
+       <!-- Insert contacts from handlebars contact template -->
+      </div>
+      <div id="no_contacts_msg" class="message">
+        <p>There are no contacts.</p>
+        <button class="add">Add a Contact</button>
+      </div>
+      <div id="search_msg" class="message">
+        <p></p>
+      </div>
+    </section>
+
+    <section id="create">
+      <h2>Create Contact</h2>
+      <form id="contact_info">
+        <fieldset>
+            <dl>
+              <dt><label for="full_name">Full name:</label></dt>
+              <dd><input type="text" id="full_name" name="full_name"></dd>
+            </dl>
+            <dl>
+              <dt><label for="email">Email address:</label></dt>
+              <dd><input type="email" id="email" name="email"></dd>
+            </dl>
+            <dl>            
+              <dt><label for="phone">Phone number:</label></dt>
+              <dd><input type="text" id="phone" name="phone"></dd>
+            </dl>
+            <dl>
+              <dt>Tag(s):</dt>
+              <dd>
+                <div id="tag_checkboxes">
+                  <label><input type="checkbox">Business</label>
+                  <label><input type="checkbox">Family</label>
+                  <label><input type="checkbox">Personal</label>
+                  <label><input type="checkbox">Skiing</label>
+                  <label><input type="checkbox">Cooking class</label>
+                  <label><input type="checkbox">Marketing</label>
+                </div>
+                <input type="text" id="new_tag" placeholder="create new tag">
+              </dd>
+            </dl>
+            <button>Submit</button>
+            <button>Cancel</button>
+          </dl>
+        </fieldset>
+      </form>
+    </section> 
+    <section id="edit">
+      <h2>Edit Contact</h2>
+    </section>
+  </main>
+
+  <script type="text/x-handlebars" id="tag_option">
+    <option>{{tag}}</option>
+  </script>
+
+  <script type="text/x-handlebars" id="tag_checkbox">
+      <label><input type="checkbox">{{tag}}</label>
+  </script>
+
+  <script type="text/x-handlebars" id="single_contact" data-type="partial">
+    <div class="contact">
+      <h3>{{full_name}}</h3>
+      <dl>
+        <dt>Phone:</dt>
+        <dd>{{phone}}</dd>
+        <dt>Email:</dt>
+        <dd>{{email}}</dd>
+        {{#if tags}}
+        <dt>Tags:</dt>
+        <dd>
+          {{# each tag}}
+            <span class="display_tag">{{tag}}</span>
+          {{/each}}
+        </dd>
+        {{/if}}
+      </dl>
+      <button class="edit">Edit</button>
+      <button class="delete">Delete</button>
+    </div>
+  </script>
+
+
+</body>
+</html>
