@@ -47,7 +47,7 @@
         <fieldset>
           <dl>
             <dt><label for="full_name">Full name:</label></dt>
-            <dd><input type="text" id="full_name" name="full_name" class="info"></dd>
+            <dd><input type="text" id="full_name" name="full_name" class="info" required></dd>
           </dl>
           <dl>
             <dt><label for="email">Email address:</label></dt>
@@ -67,8 +67,8 @@
               <button class="create_tag">Create Tag</button>
             </dd>
           </dl>
-          <button class="submit">Submit</button>
-          <button class="cancel">Cancel</button>
+          <button class="submit" type="submit">Submit</button>
+          <button class="cancel" type="reset">Cancel</button>
         </fieldset>
       </form>
     </section> 
@@ -91,17 +91,17 @@
 
   <script type="text/x-handlebars" id="single_contact" data-type="partial">
     <div class="contact" data-id="{{id}}">
-      <h3>{{full_name}}</h3>
+      <h3>{{{full_name}}}</h3>
       <dl>
         <dt>Phone:</dt>
-        <dd>{{phone_number}}</dd>
+        <dd>{{{phone_number}}}</dd>
         <dt>Email:</dt>
-        <dd>{{email}}</dd>
+        <dd>{{{email}}}</dd>
         {{#if tags}}
         <dt>Tags:</dt>
         <dd>
           {{#each tags}}
-            <span class="display_tag">{{this}}</span>
+            <span class="display_tag">{{{this}}}</span>
           {{/each}}
         </dd>
         {{/if}}

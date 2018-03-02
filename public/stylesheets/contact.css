@@ -64,6 +64,9 @@ header li {
 .message {
   margin: 40px; }
 
+#no_contacts_msg {
+  display: none; }
+
 /********** Create and Edit ******/
 #create, #edit {
   padding: 50px 0;

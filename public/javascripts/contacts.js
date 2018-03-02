@@ -6,22 +6,25 @@ class Contact {
 
 class ContactApp {
   constructor() {    
-    this.tags = ['kids', 'work'];
+    this.tags;
     this.buildTemplates();
     this.getContacts();
 
-    
-
     $('.add_button').click(this.displayCreateForm.bind(this));
-    $('.create_tag').click(this.createTag.bind(this));
+    $('button.create_tag').click(this.createTag.bind(this));
     $('#edit').append($('.contact_info').clone(true));
     
-
-
-    $('#create .submit').click(this.submitCreate.bind(this));
     $('button.cancel').click(this.cancelCreateOrEdit.bind(this));
-    // $('#edit .submit').click(this.submitEdit.bind(this));
-    // $('#edit .cancel').click(this.cancelEdit.bind(this));
+    $('#create form').submit(this.submitCreate.bind(this));
+    $('#edit form').submit(this.submitEdit.bind(this));
+    $('input').keydown(this.blockCharacters.bind(this));
+  }
+
+  blockCharacters(e) {
+    const BADCHARS = ['<', '>', "\"", "'", '&'];
+    if (BADCHARS.includes(e.key)) {
+      e.preventDefault();
+    }
   }
 
   getContacts() {
@@ -33,6 +36,10 @@ class ContactApp {
   }
 
   renderContactsAndTags(contactArray) {
+    if (contactArray.length === 0) {
+      $('#no_contacts_msg').show();
+      return;
+    }
     this.contacts = contactArray.map( contact => {
       contact.tags = contact.tags.split(',');
       return contact;
@@ -92,19 +99,15 @@ class ContactApp {
   displayEditForm(e) {
     e.preventDefault();
     const id = e.target.parentNode.getAttribute('data-id');
-    console.log(id);
     this.fillValues(id);
+    $('#edit form').attr('data-id', id);
     $('#edit').slideDown();
   }
 
   fillValues(id) {
     const contact = this.contacts.filter(person => person.id == id )[0];
-    console.log(contact);
     $('#edit .info').each( (i, field) => {
-      let fieldName = field.name;
-      console.log(fieldName);
-      console.log(contact[fieldName]);
-      field.value = contact[fieldName];
+      field.value = contact[field.name];
     });
     $('#edit [name=tag]').each( (i, checkbox) => {
       if (contact.tags.includes(checkbox.value)) {
@@ -144,37 +147,44 @@ class ContactApp {
 
   submitCreate(e) {
     e.preventDefault();
-    const contactInfo = this.contactData();
-    $.ajax({
-      type: 'POST',
-      url: '/api/contacts',
-      data: contactInfo,
-      success: this.getContacts.bind(this),
-    });
+    this.sendAjaxAndRefresh('POST', "", this.contactData())
     $('#create').slideUp();
+  }
+
+  sendAjaxAndRefresh(method, id, contactInfo) {
+    $.ajax({
+      type: method,
+      url: id ? '/api/contacts/' + id : 'api/contacts',
+      success: this.getContacts.bind(this),
+      data: contactInfo,
+    })
   }
 
   submitEdit(e) {
     e.preventDefault();
-    const contactInfo = contactData();
-    $.ajax({
-      type: 'PUT',
-      url: '/api/'
-    })
+    const id = e.target.getAttribute('data-id');
+    this.sendAjaxAndRefresh('PUT', id, this.contactData())
+    $('#edit').slideUp(); 
   }
 
-  sanitizeInput(string) {
-    return string.trim().replace('>', '&#60;').replace('<', '&#62;');
+  sanitizeInput(input) {
+    return input.trim();
   }
 
   cancelCreateOrEdit(e) {
-    e.preventDefault();
     $('#create, #edit').slideUp();
   }
 
   deleteContact(e) {
     e.preventDefault();
-    console.log('called deleteContact');
+    const id = e.target.parentNode.getAttribute('data-id');
+    if (confirm('Are you sure you want to delete this contact?')) {
+      $.ajax({
+        type: 'DELETE',
+        url: '/api/contacts/' + id,
+        success: this.getContacts.bind(this),
+      });
+    }
   }
 
   // fillDataObj() {
