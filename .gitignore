@@ -1,3 +1,4 @@
 *.scss
 *.css.map
 *.scssc
+*.sqlite3

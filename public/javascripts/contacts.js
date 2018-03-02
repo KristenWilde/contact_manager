@@ -5,18 +5,14 @@ class Contact {
 }
 
 class ContactApp {
-  constructor() {
-    this.getContacts();
+  constructor() {    
     this.tags = ['kids', 'work'];
     this.buildTemplates();
-    this.renderTagOptions();
-    this.renderTagCheckboxes();
-    // this.renderContacts();
+    this.getContacts();
 
     $('.add_button').click(this.displayCreateForm.bind(this));
     $('.create_tag').click(this.createTag.bind(this));
     $('#edit').append($('.contact_info').clone(true));
-
     $('#create .submit').click(this.submitCreate.bind(this));
     // $('#create .cancel').click(this.cancelCreate.bind(this));
     // $('#edit .submit').click(this.submitEdit.bind(this));
@@ -27,11 +23,27 @@ class ContactApp {
     $.ajax({
       url: '/api/contacts',
       dataType: 'json',
-      success: (data, status) => {
-        this.contacts = data;
-        this.renderContacts();
-      },
+      success: this.renderContactsAndTags.bind(this),
     })
+  }
+
+  renderContactsAndTags(contactArray) {
+    this.contacts = contactArray.map( contact => {
+      contact.tags = contact.tags.split(',');
+      return contact;
+    });
+    this.renderContacts();
+    this.tags = this.extractTags();
+    this.renderTagOptions();
+    this.renderTagCheckboxes();
+  }
+
+  extractTags() {
+    let tags = [];
+    this.contacts.forEach( person => {
+      tags = tags.concat(person.tags);
+    })
+    return tags;
   }
 
   buildTemplates() {
@@ -75,7 +87,7 @@ class ContactApp {
       this.tags.push(tagName);
     }
     this.renderTagCheckboxes();
-    $(`[value=${tagName}]`).attr('checked', true);
+    // $(`[value=${tagName}]`).attr('checked', true);
   }
 
   contactData() {
@@ -102,9 +114,7 @@ class ContactApp {
       type: 'POST',
       url: '/api/contacts',
       data: contact,
-      success: function(data, status) {
-        console.log(status);
-      }
+      success: this.getContacts.bind(this),
     });
     $('#create').slideUp();
   }

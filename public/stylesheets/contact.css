@@ -108,9 +108,31 @@ header li {
     bottom: -7px;
     left: -3px; }
 
-/****** Manage Tags **********/
 /****** Contact List *********/
+#contact_list {
+  overflow: hidden; }
+
 .display_tag {
   margin-right: 4px; }
+
+div.contact {
+  float: left;
+  margin: 30px 20px 10px;
+  width: 255px;
+  text-align: left; }
+  div.contact h3 {
+    font-size: 26px;
+    font-weight: 400;
+    margin-bottom: 18px; }
+  div.contact dl {
+    font-size: 14px; }
+  div.contact dt {
+    font-weight: 600;
+    margin-top: 5px; }
+  div.contact button {
+    font-size: 16px;
+    line-height: 30px;
+    height: 30px;
+    margin: 20px 5px 0 0; }
 
 /*# sourceMappingURL=contact.css.map */
