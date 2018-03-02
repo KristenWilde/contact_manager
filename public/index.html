@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>Contact Manager</title>
   <link rel="stylesheet" href="stylesheets/reset.css">
-  <link rel="stylesheet" href="stylesheets/contacts.css">
+  <link rel="stylesheet" href="stylesheets/contact.css">
   <script type="text/javascript" src="/javascripts/jquery.js"></script>
   <script type="text/javascript" src="/javascripts/handlebars.js"></script>
   <script src="javascripts/contacts.js"></script>
@@ -18,13 +18,12 @@
       <header>
         <ul class="controls">
           <li>
-            <button class="add">Add Contact</button>
+            <button class="add_button">Add Contact</button>
           </li>
           <li><input type="text" id="search" placeholder="search names"></li>
           <li>
             <label for="taglist">Tags:</label>
-            <select name="taglist" id="taglist">
-              
+            <select name="taglist" class="tag_list">
               <!-- append options from handlebars tag template -->
             </select>
           </li>
@@ -35,7 +34,7 @@
       </div>
       <div id="no_contacts_msg" class="message">
         <p>There are no contacts.</p>
-        <button class="add">Add a Contact</button>
+        <button class="add_button">Add a Contact</button>
       </div>
       <div id="search_msg" class="message">
         <p></p>
@@ -44,37 +43,32 @@
 
     <section id="create">
       <h2>Create Contact</h2>
-      <form id="contact_info">
+      <form class="contact_info">
         <fieldset>
-            <dl>
-              <dt><label for="full_name">Full name:</label></dt>
-              <dd><input type="text" id="full_name" name="full_name"></dd>
-            </dl>
-            <dl>
-              <dt><label for="email">Email address:</label></dt>
-              <dd><input type="email" id="email" name="email"></dd>
-            </dl>
-            <dl>            
-              <dt><label for="phone">Phone number:</label></dt>
-              <dd><input type="text" id="phone" name="phone"></dd>
-            </dl>
-            <dl>
-              <dt>Tag(s):</dt>
-              <dd>
-                <div id="tag_checkboxes">
-                  <label><input type="checkbox">Business</label>
-                  <label><input type="checkbox">Family</label>
-                  <label><input type="checkbox">Personal</label>
-                  <label><input type="checkbox">Skiing</label>
-                  <label><input type="checkbox">Cooking class</label>
-                  <label><input type="checkbox">Marketing</label>
-                </div>
-                <input type="text" id="new_tag" placeholder="create new tag">
-              </dd>
-            </dl>
-            <button>Submit</button>
-            <button>Cancel</button>
+          <dl>
+            <dt><label for="full_name">Full name:</label></dt>
+            <dd><input type="text" id="full_name" name="full_name" class="info"></dd>
           </dl>
+          <dl>
+            <dt><label for="email">Email address:</label></dt>
+            <dd><input type="email" id="email" name="email" class="info"></dd>
+          </dl>
+          <dl>            
+            <dt><label for="phone">Phone number:</label></dt>
+            <dd><input type="text" id="phone" name="phone_number" class="info"></dd>
+          </dl>
+          <dl>
+            <dt>Tag(s):</dt>
+            <dd>
+              <div class="tag_checkboxes">
+                <!-- append tag checkboxes -->
+              </div>
+              <input type="text" class="new_tag" placeholder="new tag">
+              <button class="create_tag">Create Tag</button>
+            </dd>
+          </dl>
+          <button class="submit">Submit</button>
+          <button class="cancel">Cancel</button>
         </fieldset>
       </form>
     </section> 
@@ -83,12 +77,16 @@
     </section>
   </main>
 
-  <script type="text/x-handlebars" id="tag_option">
-    <option>{{tag}}</option>
+  <script type="text/x-handlebars" id="tag_options">
+    {{# each .}}
+    <option>{{this}}</option>
+    {{/each}}
   </script>
 
-  <script type="text/x-handlebars" id="tag_checkbox">
-      <label><input type="checkbox">{{tag}}</label>
+  <script type="text/x-handlebars" id="tag_checkboxes">
+    {{# each .}}
+      <label><input type="checkbox" name="tag" value="{{this}}">{{this}}</label>
+    {{/each}}
   </script>
 
   <script type="text/x-handlebars" id="single_contact" data-type="partial">
@@ -96,13 +94,13 @@
       <h3>{{full_name}}</h3>
       <dl>
         <dt>Phone:</dt>
-        <dd>{{phone}}</dd>
+        <dd>{{phone_number}}</dd>
         <dt>Email:</dt>
         <dd>{{email}}</dd>
         {{#if tags}}
         <dt>Tags:</dt>
         <dd>
-          {{# each tag}}
+          {{#each tag}}
             <span class="display_tag">{{tag}}</span>
           {{/each}}
         </dd>
@@ -113,6 +111,15 @@
     </div>
   </script>
 
+  <script type="text/x-handlebars" id="all_contacts">
+    {{#each .}}
+    {{> single_contact}}
+    {{/each}}
+  </script>
+
+  <script>
+    const app = new ContactApp();
+  </script>
 
 </body>
 </html>

@@ -3,6 +3,7 @@ require 'sinatra/contrib'
 require 'docdsl'
 require 'sinatra/activerecord'
 require_relative 'lib/contacts'
+require 'sinatra/reloader'
 
 class ContactsApp < Sinatra::Base
   register Sinatra::Contrib
