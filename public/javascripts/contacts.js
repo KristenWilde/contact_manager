@@ -10,11 +10,16 @@ class ContactApp {
     this.buildTemplates();
     this.getContacts();
 
+    
+
     $('.add_button').click(this.displayCreateForm.bind(this));
     $('.create_tag').click(this.createTag.bind(this));
     $('#edit').append($('.contact_info').clone(true));
+    
+
+
     $('#create .submit').click(this.submitCreate.bind(this));
-    // $('#create .cancel').click(this.cancelCreate.bind(this));
+    $('button.cancel').click(this.cancelCreateOrEdit.bind(this));
     // $('#edit .submit').click(this.submitEdit.bind(this));
     // $('#edit .cancel').click(this.cancelEdit.bind(this));
   }
@@ -33,7 +38,7 @@ class ContactApp {
       return contact;
     });
     this.renderContacts();
-    this.tags = this.extractTags();
+    this.extractTags();
     this.renderTagOptions();
     this.renderTagCheckboxes();
   }
@@ -41,9 +46,13 @@ class ContactApp {
   extractTags() {
     let tags = [];
     this.contacts.forEach( person => {
-      tags = tags.concat(person.tags);
+      person.tags.forEach( tag => {
+        if (!tags.includes(tag)) {
+          tags.push(tag);
+        }
+      });
     })
-    return tags;
+    this.tags = tags;
   }
 
   buildTemplates() {
@@ -70,12 +79,38 @@ class ContactApp {
 
   renderContacts() {
     $('#contact_list').html(this.templates.all_contacts(this.contacts));
+    $('button.edit').click(this.displayEditForm.bind(this));
+    $('button.delete').click(this.deleteContact.bind(this));
   }
 
   displayCreateForm(e) {
     e.preventDefault();
     console.log('called displayCreateContact')
     $('#create').slideDown();
+  }
+
+  displayEditForm(e) {
+    e.preventDefault();
+    const id = e.target.parentNode.getAttribute('data-id');
+    console.log(id);
+    this.fillValues(id);
+    $('#edit').slideDown();
+  }
+
+  fillValues(id) {
+    const contact = this.contacts.filter(person => person.id == id )[0];
+    console.log(contact);
+    $('#edit .info').each( (i, field) => {
+      let fieldName = field.name;
+      console.log(fieldName);
+      console.log(contact[fieldName]);
+      field.value = contact[fieldName];
+    });
+    $('#edit [name=tag]').each( (i, checkbox) => {
+      if (contact.tags.includes(checkbox.value)) {
+        checkbox.setAttribute('checked', true);
+      }
+    })
   }
 
   createTag(e) {
@@ -109,18 +144,37 @@ class ContactApp {
 
   submitCreate(e) {
     e.preventDefault();
-    const contact = this.contactData();
+    const contactInfo = this.contactData();
     $.ajax({
       type: 'POST',
       url: '/api/contacts',
-      data: contact,
+      data: contactInfo,
       success: this.getContacts.bind(this),
     });
     $('#create').slideUp();
   }
 
+  submitEdit(e) {
+    e.preventDefault();
+    const contactInfo = contactData();
+    $.ajax({
+      type: 'PUT',
+      url: '/api/'
+    })
+  }
+
   sanitizeInput(string) {
     return string.trim().replace('>', '&#60;').replace('<', '&#62;');
+  }
+
+  cancelCreateOrEdit(e) {
+    e.preventDefault();
+    $('#create, #edit').slideUp();
+  }
+
+  deleteContact(e) {
+    e.preventDefault();
+    console.log('called deleteContact');
   }
 
   // fillDataObj() {

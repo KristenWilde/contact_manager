@@ -110,15 +110,18 @@ header li {
 
 /****** Contact List *********/
 #contact_list {
-  overflow: hidden; }
+  overflow: hidden;
+  text-align: left;
+  padding: 15px 0 0 20px; }
 
 .display_tag {
   margin-right: 4px; }
 
 div.contact {
-  float: left;
-  margin: 30px 20px 10px;
-  width: 255px;
+  display: inline-block;
+  vertical-align: top;
+  margin: 10px 10px 20px;
+  width: 250px;
   text-align: left; }
   div.contact h3 {
     font-size: 26px;
@@ -133,6 +136,6 @@ div.contact {
     font-size: 16px;
     line-height: 30px;
     height: 30px;
-    margin: 20px 5px 0 0; }
+    margin: 15px 5px 0 0; }
 
 /*# sourceMappingURL=contact.css.map */
