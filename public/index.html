@@ -85,23 +85,27 @@
 
   <script type="text/x-handlebars" id="tag_checkboxes">
     {{# each .}}
-      <label><input type="checkbox" name="tag" value="{{this}}">{{this}}</label>
+      {{> single_checkbox}}
     {{/each}}
+  </script>
+
+  <script type="text/x-handlebars" id="single_checkbox" data-type="partial">
+    <label><input type="checkbox" name="tag" value="{{this}}">{{this}}</label>
   </script>
 
   <script type="text/x-handlebars" id="single_contact" data-type="partial">
     <div class="contact" data-id="{{id}}">
-      <h3>{{{full_name}}}</h3>
+      <h3>{{full_name}}</h3>
       <dl>
         <dt>Phone:</dt>
-        <dd>{{{phone_number}}}</dd>
+        <dd>{{phone_number}}</dd>
         <dt>Email:</dt>
-        <dd>{{{email}}}</dd>
+        <dd>{{email}}</dd>
         {{#if tags}}
         <dt>Tags:</dt>
         <dd>
           {{#each tags}}
-            <span class="display_tag">{{{this}}}</span>
+            <span class="display_tag">{{this}}</span>
           {{/each}}
         </dd>
         {{/if}}

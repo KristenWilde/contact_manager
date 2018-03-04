@@ -6,7 +6,7 @@ class Contact {
 
 class ContactApp {
   constructor() {    
-    this.tags;
+    this.tags = [];
     this.buildTemplates();
     this.getContacts();
 
@@ -21,7 +21,7 @@ class ContactApp {
   }
 
   blockCharacters(e) {
-    const BADCHARS = ['<', '>', "\"", "'", '&'];
+    const BADCHARS = ['<', '>', "\"", "'", '&', '/'];
     if (BADCHARS.includes(e.key)) {
       e.preventDefault();
     }
@@ -118,14 +118,15 @@ class ContactApp {
 
   createTag(e) {
     e.preventDefault();
-    let tagName = e.target.previousElementSibling.value;
-    tagName = this.sanitizeInput(tagName);
-    console.log('new tag:' + tagName)
-    if (!this.tags.includes(tagName)) {
-      this.tags.push(tagName);
+    const field = e.target.previousElementSibling;
+    const tagName = field.value.trim();
+    
+    if (!!tagName && !this.tags.includes(tagName)) {
+      const $el = $(this.templates.single_checkbox(tagName));
+      $el.find(':checkbox').attr('checked', true);
+      $('.tag_checkboxes:visible').append($el);
+      field.value = "";
     }
-    this.renderTagCheckboxes();
-    // $(`[value=${tagName}]`).attr('checked', true);
   }
 
   contactData() {
@@ -147,23 +148,24 @@ class ContactApp {
 
   submitCreate(e) {
     e.preventDefault();
-    this.sendAjaxAndRefresh('POST', "", this.contactData())
+    this.sendAjaxAndRefresh('POST')
     $('#create').slideUp();
   }
 
-  sendAjaxAndRefresh(method, id, contactInfo) {
+  sendAjaxAndRefresh(method, id) {
     $.ajax({
       type: method,
       url: id ? '/api/contacts/' + id : 'api/contacts',
       success: this.getContacts.bind(this),
-      data: contactInfo,
+      data: (method === 'PUT' || method === 'POST') ? this.contactData() : null,
+      dataType: (method === 'GET') ? 'json' : null,
     })
   }
 
   submitEdit(e) {
     e.preventDefault();
     const id = e.target.getAttribute('data-id');
-    this.sendAjaxAndRefresh('PUT', id, this.contactData())
+    this.sendAjaxAndRefresh('PUT', id);
     $('#edit').slideUp(); 
   }
 
@@ -172,6 +174,7 @@ class ContactApp {
   }
 
   cancelCreateOrEdit(e) {
+    // Don't prevent default behavior - form should reset.
     $('#create, #edit').slideUp();
   }
 
@@ -179,21 +182,8 @@ class ContactApp {
     e.preventDefault();
     const id = e.target.parentNode.getAttribute('data-id');
     if (confirm('Are you sure you want to delete this contact?')) {
-      $.ajax({
-        type: 'DELETE',
-        url: '/api/contacts/' + id,
-        success: this.getContacts.bind(this),
-      });
+      this.sendAjaxAndRefresh('DELETE', id);
     }
   }
-
-  // fillDataObj() {
-  //   this.initializeDataObj();
-  //   this.$fields.each((idx, el) => {
-  //     this.data[el.name] += el.value;
-  //   });
-  //   return this.data;
-  // }
-  // }
 }
 
