@@ -17,16 +17,14 @@ class ContactApp {
     $('button.cancel').click(this.cancelCreateOrEdit.bind(this));
     $('#create form').submit(this.submitCreate.bind(this));
     $('#edit form').submit(this.submitEdit.bind(this));
-    $('input').keydown( (event) => {
+    $('#create input, #edit input').keydown( (event) => {
       this.setErrorMessage(event.target);
     });
+    $('#search').keyup(this.search.bind(this));
   }
 
-  blockCharacters(e) {
-    const BADCHARS = ['<', '>', "\"", "'", '&', '/'];
-    if (BADCHARS.includes(e.key)) {
-      e.preventDefault();
-    }
+  search() {
+    
   }
 
   getContacts() {
@@ -40,12 +38,15 @@ class ContactApp {
   renderContactsAndTags(contactArray) {
     if (contactArray.length === 0) {
       $('#no_contacts_msg').show();
-      return;
-    }
-    this.contacts = contactArray.map( contact => {
-      contact.tags = contact.tags.split(',');
-      return contact;
-    });
+      this.contacts = [];
+    } 
+    else { 
+      $('#no_contacts_msg').hide();
+      this.contacts = contactArray.map( contact => {
+        contact.tags = contact.tags.split(',');
+        return contact;
+      });
+    }  
     this.renderContacts();
     this.extractTags();
     this.renderTagOptions();
