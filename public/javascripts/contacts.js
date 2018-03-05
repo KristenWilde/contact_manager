@@ -21,11 +21,11 @@ class ContactApp {
       this.setErrorMessage(event.target);
     });
     $('#search').keyup(this.search.bind(this));
+    $('#taglist').change(this.findByTag.bind(this));
   }
 
   search(e) {
-    const field = e.target;
-    const searchString = field.value;
+    const searchString = $('#search').val();
     const matchingContacts = this.contacts.filter((person) => {
       return person.full_name.indexOf(searchString) > -1;
     })
@@ -37,6 +37,15 @@ class ContactApp {
     } else {
       $('#search_msg').slideUp();
     }
+  }
+
+  findByTag(e) {
+    console.log('findByTag fired.')
+    const tag = $('#taglist').val();
+    const matchingContacts = this.contacts.filter( person => {
+      return person.tags.includes(tag);
+    })
+    this.renderContacts(matchingContacts);
   }
 
   getContacts() {

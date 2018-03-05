@@ -23,7 +23,7 @@
           <li><input type="text" id="search" placeholder="search names"></li>
           <li>
             <label for="taglist">Tags:</label>
-            <select name="taglist" class="tag_list">
+            <select name="taglist" class="tag_list" id="taglist">
               <!-- append options from handlebars tag template -->
             </select>
           </li>
@@ -47,7 +47,7 @@
         <fieldset>
           <dl>
             <dt><label for="full_name">Full name:</label></dt>
-            <dd><input type="text" id="full_name" name="full_name" class="info" required pattern="[a-zA-Z0-9 \-]+"></dd>
+            <dd><input type="text" id="full_name" name="full_name" class="info" required pattern="[a-zA-Z0-9 \-]+" title="Characters not allowed: <>/\&amp;, double and single quotes"></dd>
           </dl>
           <dl>
             <dt><label for="email">Email address:</label></dt>
@@ -55,7 +55,7 @@
           </dl>
           <dl>            
             <dt><label for="phone">Phone number:</label></dt>
-            <dd><input type="text" id="phone" name="phone_number" class="info" pattern="[^'/<>&\x22]+"></dd>
+            <dd><input type="text" id="phone" name="phone_number" class="info" pattern="[^'/<>&\x22]+" title="Characters not allowed: <>/\&amp;, double and single quotes"></dd>
           </dl>
           <dl>
             <dt>Tag(s):</dt>
