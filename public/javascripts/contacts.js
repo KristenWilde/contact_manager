@@ -17,14 +17,26 @@ class ContactApp {
     $('button.cancel').click(this.cancelCreateOrEdit.bind(this));
     $('#create form').submit(this.submitCreate.bind(this));
     $('#edit form').submit(this.submitEdit.bind(this));
-    $('#create input, #edit input').keydown( (event) => {
+    $('#create input, #edit input').keyup( (event) => {
       this.setErrorMessage(event.target);
     });
     $('#search').keyup(this.search.bind(this));
   }
 
-  search() {
-    
+  search(e) {
+    const field = e.target;
+    const searchString = field.value;
+    const matchingContacts = this.contacts.filter((person) => {
+      return person.full_name.indexOf(searchString) > -1;
+    })
+    this.renderContacts(matchingContacts);
+    if (matchingContacts.length === 0) {
+      const msg = `There are no contacts containing <strong>${searchString}</strong>.`;
+      $('#search_msg p').html(msg);
+      $('#search_msg').slideDown();
+    } else {
+      $('#search_msg').slideUp();
+    }
   }
 
   getContacts() {
@@ -47,7 +59,7 @@ class ContactApp {
         return contact;
       });
     }  
-    this.renderContacts();
+    this.renderContacts(this.contacts);
     this.extractTags();
     this.renderTagOptions();
     this.renderTagCheckboxes();
@@ -87,8 +99,8 @@ class ContactApp {
     $('.tag_checkboxes').html(this.templates.tag_checkboxes(this.tags));
   }
 
-  renderContacts() {
-    $('#contact_list').html(this.templates.all_contacts(this.contacts));
+  renderContacts(collection) {
+    $('#contact_list').html(this.templates.all_contacts(collection));
     $('button.edit').click(this.displayEditForm.bind(this));
     $('button.delete').click(this.deleteContact.bind(this));
   }
