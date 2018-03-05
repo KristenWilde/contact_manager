@@ -43,11 +43,11 @@
 
     <section id="create">
       <h2>Create Contact</h2>
-      <form class="contact_info">
+      <form class="contact_info" novalidate>
         <fieldset>
           <dl>
             <dt><label for="full_name">Full name:</label></dt>
-            <dd><input type="text" id="full_name" name="full_name" class="info" required></dd>
+            <dd><input type="text" id="full_name" name="full_name" class="info" required pattern="[a-zA-Z0-9 \-]+"></dd>
           </dl>
           <dl>
             <dt><label for="email">Email address:</label></dt>
@@ -55,7 +55,7 @@
           </dl>
           <dl>            
             <dt><label for="phone">Phone number:</label></dt>
-            <dd><input type="text" id="phone" name="phone_number" class="info"></dd>
+            <dd><input type="text" id="phone" name="phone_number" class="info" pattern="[^'/<>&\x22]+"></dd>
           </dl>
           <dl>
             <dt>Tag(s):</dt>
@@ -63,7 +63,7 @@
               <div class="tag_checkboxes">
                 <!-- append tag checkboxes -->
               </div>
-              <input type="text" class="new_tag" placeholder="new tag">
+              <input type="text" class="new_tag" placeholder="new tag" pattern="[^'/<>&\x22]+">
               <button class="create_tag">Create Tag</button>
             </dd>
           </dl>

@@ -17,7 +17,9 @@ class ContactApp {
     $('button.cancel').click(this.cancelCreateOrEdit.bind(this));
     $('#create form').submit(this.submitCreate.bind(this));
     $('#edit form').submit(this.submitEdit.bind(this));
-    $('input').keydown(this.blockCharacters.bind(this));
+    $('input').keydown( (event) => {
+      this.setErrorMessage(event.target);
+    });
   }
 
   blockCharacters(e) {
@@ -120,12 +122,26 @@ class ContactApp {
     e.preventDefault();
     const field = e.target.previousElementSibling;
     const tagName = field.value.trim();
-    
-    if (!!tagName && !this.tags.includes(tagName)) {
+
+    this.setErrorMessage(field);
+
+    if (field.reportValidity() && !this.tags.includes(tagName)) {
       const $el = $(this.templates.single_checkbox(tagName));
       $el.find(':checkbox').attr('checked', true);
       $('.tag_checkboxes:visible').append($el);
       field.value = "";
+    }
+  }
+
+  setErrorMessage(field) {
+    if (field.validity.valueMissing) {
+      field.setCustomValidity('Name is required.')
+    }
+    else if (field.validity.patternMismatch) {
+      field.setCustomValidity("Characters not allowed: <>'/\"&");
+    } 
+    else {
+      field.setCustomValidity('');
     }
   }
 
@@ -148,8 +164,15 @@ class ContactApp {
 
   submitCreate(e) {
     e.preventDefault();
-    this.sendAjaxAndRefresh('POST')
-    $('#create').slideUp();
+    $('.new_tag').val('');
+    $('input:text').each((i, field) => {
+      this.setErrorMessage(field);
+      console.log(field.name + ' error: ' + field.validationMessage + field.validity.valid);
+    }) 
+    if (e.target.reportValidity()) {
+      this.sendAjaxAndRefresh('POST')
+      $('#create').slideUp();
+    }
   }
 
   sendAjaxAndRefresh(method, id) {
@@ -164,9 +187,16 @@ class ContactApp {
 
   submitEdit(e) {
     e.preventDefault();
-    const id = e.target.getAttribute('data-id');
-    this.sendAjaxAndRefresh('PUT', id);
-    $('#edit').slideUp(); 
+    $('.new_tag').val('');
+    $('input:text').each((i, field) => {
+      this.setErrorMessage(field);
+      console.log(field.name + ' error: ' + field.validationMessage + field.validity.valid);
+    }) 
+    if (e.target.reportValidity()) {
+      const id = e.target.getAttribute('data-id');
+      this.sendAjaxAndRefresh('PUT', id);
+      $('#edit').slideUp(); 
+    }
   }
 
   sanitizeInput(input) {
