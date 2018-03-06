@@ -13,6 +13,7 @@
 </head>
 <body>
   <h1>Contact Manager</h1>
+
   <main>
     <section id="contacts">
       <header>
@@ -22,20 +23,25 @@
           </li>
           <li><input type="text" id="search" placeholder="search names"></li>
           <li>
-            <label for="taglist">Tags:</label>
-            <select name="taglist" class="tag_list" id="taglist">
-              <!-- append options from handlebars tag template -->
+            <select id="taglist">
+              <optgroup id="current_tags" label="Select tag:">
+              <!-- append options here -->
+              </optgroup>
+              <option>All tags</option>
             </select>
           </li>
         </ul>
       </header>
+
       <div id="contact_list">
        <!-- Insert contacts from handlebars contact template -->
       </div>
+
       <div id="no_contacts_msg" class="message">
         <p>There are no contacts.</p>
         <button class="add_button">Add a Contact</button>
       </div>
+
       <div id="search_msg" class="message">
         <p></p>
       </div>
@@ -43,11 +49,12 @@
 
     <section id="create">
       <h2>Create Contact</h2>
+
       <form class="contact_info" novalidate>
         <fieldset>
           <dl>
             <dt><label for="full_name">Full name:</label></dt>
-            <dd><input type="text" id="full_name" name="full_name" class="info" required pattern="[a-zA-Z0-9 \-]+" title="Characters not allowed: <>/\&amp;, double and single quotes"></dd>
+            <dd><input type="text" id="full_name" name="full_name" class="info" required pattern="[^'/<>&\x22]+" title="Characters not allowed: <>/\&amp;, double and single quotes"></dd>
           </dl>
           <dl>
             <dt><label for="email">Email address:</label></dt>
@@ -57,6 +64,7 @@
             <dt><label for="phone">Phone number:</label></dt>
             <dd><input type="text" id="phone" name="phone_number" class="info" pattern="[^'/<>&\x22]+" title="Characters not allowed: <>/\&amp;, double and single quotes"></dd>
           </dl>
+          
           <dl>
             <dt>Tag(s):</dt>
             <dd>
@@ -71,29 +79,30 @@
           <button class="cancel" type="reset">Cancel</button>
         </fieldset>
       </form>
-    </section> 
+    </section>
+
     <section id="edit">
       <h2>Edit Contact</h2>
     </section>
   </main>
 
-  <script type="text/x-handlebars" id="tag_options">
+  <script type="text/x-handlebars" id="tagOptions">
     {{# each .}}
     <option>{{this}}</option>
     {{/each}}
   </script>
 
-  <script type="text/x-handlebars" id="tag_checkboxes">
-    {{# each .}}
-      {{> single_checkbox}}
-    {{/each}}
-  </script>
-
-  <script type="text/x-handlebars" id="single_checkbox" data-type="partial">
+  <script type="text/x-handlebars" id="singleCheckbox" data-type="partial">
     <label><input type="checkbox" name="tag" value="{{this}}">{{this}}</label>
   </script>
 
-  <script type="text/x-handlebars" id="single_contact" data-type="partial">
+  <script type="text/x-handlebars" id="tagCheckboxes">
+    {{# each .}}
+      {{> singleCheckbox}}
+    {{/each}}
+  </script>
+
+  <script type="text/x-handlebars" id="singleContact" data-type="partial">
     <div class="contact" data-id="{{id}}">
       <h3>{{full_name}}</h3>
       <dl>
@@ -115,9 +124,9 @@
     </div>
   </script>
 
-  <script type="text/x-handlebars" id="all_contacts">
+  <script type="text/x-handlebars" id="contactsCollection">
     {{#each .}}
-    {{> single_contact}}
+    {{> singleContact}}
     {{/each}}
   </script>
 
